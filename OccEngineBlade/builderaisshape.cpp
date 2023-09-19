@@ -30,7 +30,11 @@ TopoDS_Face builderAisShape::primitiv_surface(std::list<gp_Pnt>& pnts){
     BRepBuilderAPI_MakeWire makerWire;
 
     for(auto it = pnts.begin(); it != pnts.end(); it++){
-        makerWire.Add(BRepBuilderAPI_MakeEdge(*it, *(++it)).Edge());
+        gp_Pnt p1 = *it;
+        it++;
+        if (it ==  pnts.end()) break;
+        gp_Pnt p2 = *it;
+        makerWire.Add(BRepBuilderAPI_MakeEdge(p1, p2).Edge());
         it--;
     }
 
@@ -78,7 +82,7 @@ TopoDS_Solid builderAisShape::make_solid()
             --it1; // <- it1 == it2 (по позиции)
 
             builder.Add(Shell_blade, primitiv_surface(temp));
-            temp.clear();
+            //temp.clear();
         }
 
         std::list<gp_Pnt> temp;
