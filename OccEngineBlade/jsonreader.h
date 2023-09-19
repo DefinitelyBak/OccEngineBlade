@@ -14,8 +14,8 @@
 
 #include <gp_Pnt.hxx>
 
-// пусть этот класс считывает точки и делает множество точек (x, y, z) для одного слайна, нихуя себе)
-// взял стиль из stl так что в рот манал!
+// Лласс считывает точки из json файла, возвращает множество точек gp_Pnt.
+// взят стиль из stl
 
 class jsonReader
 {
@@ -28,6 +28,8 @@ public:
 
     std::shared_ptr<std::deque<std::list<gp_Pnt>>> parse_data();
 private:
+
+
     QJsonDocument json_document_;
 
     QFile file_;

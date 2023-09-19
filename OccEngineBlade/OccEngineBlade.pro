@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += widgets core gui opengl openglwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,52 +9,58 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    builderaisshape.cpp \
     jsonreader.cpp \
     main.cpp \
-    mainwindow.cpp
+    occQt.cpp \
+    occView.cpp
 
 HEADERS += \
+    builderaisshape.h \
     jsonreader.h \
-    mainwindow.h
+    occQt.h \
+    occView.h
 
 FORMS += \
-    mainwindow.ui
+    occQt.ui
+
+RESOURCES += \
+    occqt.qrc
 
 CASROOT = "D:\\Programs\\OpenCASCADE-7.7.0-vc14-64\\opencascade-7.7.0"
-#CASROOT = D:/OpenCASCADE7.4.0/opencascade-7.4.0
 
 INCLUDEPATH += $${CASROOT}/inc #Подключение *.h файлов библиотеки Open Cascade
 LIBS += -L$${CASROOT}/win64/vc14/lib/ #Подключение пути до статических библиотек *.lib Open Cascade
 
 
-#
-#LIBS +=         \
-#    -lTKernel   \
-#    -lTKMath    \
-#    -lTKG3d     \
-#    -lTKBRep    \
-#    -lTKGeomBase\
-#    -lTKGeomAlgo\
-#    -lTKTopAlgo \
-#    -lTKPrim    \
-#    -lTKBO      \
-#    -lTKBool    \
-#    -lTKOffset  \
-#    -lTKService \
-#    -lTKV3d     \
-#    -lTKOpenGl  \
-#    -lTKFillet  \
-#    -lTKXSBase  \
-#    -lTKG2d     \
-#    -lTKG3d     \
-#    -lTKTopAlgo \
-#    -lTKGeomBase\
-#    -lTKSTEP209 \
-#    -lTKSTEPAttr\
-#    -lTKSTEPBase\
-#    -lTKSTep    \
-#    -lTKXmlXCAF \
-#    -lTKXCAF    \
+
+LIBS +=         \
+    -lTKernel   \
+    -lTKMath    \
+    -lTKG3d     \
+    -lTKBRep    \
+    -lTKGeomBase\
+    -lTKGeomAlgo\
+    -lTKTopAlgo \
+    -lTKPrim    \
+    -lTKBO      \
+    -lTKBool    \
+    -lTKOffset  \
+    -lTKService \
+    -lTKV3d     \
+    -lTKOpenGl  \
+    -lTKFillet  \
+    -lTKXSBase  \
+    -lTKG2d     \
+    -lTKG3d     \
+    -lTKTopAlgo \
+    -lTKGeomBase\
+    -lTKSTEP209 \
+    -lTKSTEPAttr\
+    -lTKSTEPBase\
+    -lTKSTep    \
+    -lTKXmlXCAF \
+    -lTKXCAF    \
 
 
 # Default rules for deployment.

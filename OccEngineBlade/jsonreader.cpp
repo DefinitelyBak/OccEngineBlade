@@ -39,15 +39,15 @@ bool jsonReader::open_file(QString filename){
 
 std::shared_ptr<std::deque<std::list<gp_Pnt>>> jsonReader::parse_data()
 {
-    if (!status_file_) return std::shared_ptr<std::deque<std::list<gp_Pnt>>>();
+    // Файл не прочитан или ошибка чтения, возвращает пустой указатель.
+    if (!status_file_ || !json_document_.isObject()) return std::shared_ptr<std::deque<std::list<gp_Pnt>>>();
 
-    //qDebug() << json_document_;
     QJsonObject data;
 
     int count = 0;;
     deque_points_ = new std::deque<std::list<gp_Pnt>>;
 
-    if (json_document_.isObject())  data = json_document_.object();
+    data = json_document_.object();
 
     for (QJsonObject::iterator it = data.begin(); it < data.end(); it++){
         deque_points_->push_back(std::list<gp_Pnt>());
