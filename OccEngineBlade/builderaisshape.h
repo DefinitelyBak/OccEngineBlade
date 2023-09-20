@@ -75,12 +75,13 @@ public:
     TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 private:
-    TopoDS_Shell make_shell(std::deque<std::list<gp_Pnt>>& points_);
+    TopoDS_Shell make_shell_Bezier(std::deque<std::list<gp_Pnt>>& points_);
+    TopoDS_Shell make_shell(std::list<gp_Pnt>& points_);
     //TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
     //TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 public:
-
+    TopoDS_Shape make_shell_edge(std::deque<std::list<gp_Pnt>>& points_);
 private:
     std::map<std::string, std::deque<std::list<gp_Pnt>>> points_;
 

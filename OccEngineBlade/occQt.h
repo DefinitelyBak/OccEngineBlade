@@ -18,6 +18,9 @@
 
 #include <AIS_ViewController.hxx>
 
+
+#include <BRepBuilderAPI_Sewing.hxx>
+
 class OccView;
 
 // Главный виджет, внутри него будет происходить магия.

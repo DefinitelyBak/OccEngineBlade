@@ -28,10 +28,12 @@ TopoDS_Solid builderAisShape::make_solid()
 {
     TopoDS_Builder builder;
     builder.MakeSolid(TopoDS_blade_);
-    builder.Add(TopoDS_blade_, make_shell(points_["cx"]));
-    //builder.Add(TopoDS_blade_, make_shell(points_["cv"]));
-    //builder.Add(TopoDS_blade_, make_shell(points_["le"]));
-    //builder.Add(TopoDS_blade_, make_shell(points_["re"]));
+    builder.Add(TopoDS_blade_, make_shell(points_["up"][0]));
+    builder.Add(TopoDS_blade_, make_shell(points_["dw"][0]));
+    builder.Add(TopoDS_blade_, make_shell_Bezier(points_["cx"]));
+    builder.Add(TopoDS_blade_, make_shell_Bezier(points_["cv"]));
+    builder.Add(TopoDS_blade_, make_shell_edge(points_["le"]));
+    builder.Add(TopoDS_blade_, make_shell_edge(points_["re"]));
 
     return TopoDS_blade_;
 }
@@ -89,15 +91,20 @@ TopoDS_Face builderAisShape::primitiv_surface_Bezier(std::list<gp_Pnt>& pnts){
     return BRepBuilderAPI_MakeFace(bcFill.Surface(), 1e-6);
 
 }
+TopoDS_Shell builderAisShape::make_shell(std::list<gp_Pnt>& points_){
+    TopoDS_Shell Shell_blade;
+    TopoDS_Builder builder;
+    builder.MakeShell(Shell_blade);
+    builder.Add(Shell_blade, primitiv_surface(points_));
+    return Shell_blade;
+}
 
-
-TopoDS_Shell builderAisShape::make_shell(std::deque<std::list<gp_Pnt>>& points_)
+TopoDS_Shell builderAisShape::make_shell_Bezier(std::deque<std::list<gp_Pnt>>& points_)
 {
 
     TopoDS_Shell Shell_blade;
     TopoDS_Builder builder;
 
-    BRepBuilderAPI_MakeSolid builder_solid;
 
     builder.MakeShell(Shell_blade);
 
@@ -118,7 +125,7 @@ TopoDS_Shell builderAisShape::make_shell(std::deque<std::list<gp_Pnt>>& points_)
         auto it2 = slice2.begin();
 
         bool status = true;
-        for(int i = 0; i < slice1.size() - 1; i++){
+        for(int i = 0; i < slice1.size(); i++){
             std::list<gp_Pnt> temp;
 
             for(int j = i; j > 0; j--)
@@ -152,6 +159,37 @@ TopoDS_Shell builderAisShape::make_shell(std::deque<std::list<gp_Pnt>>& points_)
     }
 
     return Shell_blade;
+}
+
+TopoDS_Shape builderAisShape::make_shell_edge(std::deque<std::list<gp_Pnt>>& points_){
+
+    BRepOffsetAPI_Sewing sew(0.9);
+
+    for (int i = 0; i < points_.size() - 1; i++){
+        auto it1 = points_[i].begin();
+        auto it2 = points_[i + 1].begin();
+
+        while( (++it1) != points_[i].end()){
+            it1--;
+
+            std::list<gp_Pnt> list;
+
+            list.push_back(*it1);
+            it1++;
+            list.push_back(*it1);
+            it2++;
+            list.push_back(*it2);
+            it2--;
+            list.push_back(*it2);
+
+            it2++;
+
+            sew.Add(primitiv_surface_Bezier(list));
+        }
+    }
+    sew.Perform();
+
+    return sew.SewedShape();
 }
 
 Handle(AIS_Shape) builderAisShape::make_ais_shape()

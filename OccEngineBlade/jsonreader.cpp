@@ -44,7 +44,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
 
     QJsonObject data;
 
-    int count = 0;;
+    int count = 0;
     ptr_points_ = new std::map<std::string, std::deque<std::list<gp_Pnt>>>;
 
     data = json_document_.object();
@@ -62,6 +62,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
 
         qsizetype size_array = x.size();
 
+
         ptr_points_->operator[]("cx").push_back(std::list<gp_Pnt>());
         for(qsizetype i = 0; i < size_array; i++){
             ptr_points_-> operator[]("cx").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
@@ -76,6 +77,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
         ptr_points_->operator[]("le").push_back(std::list<gp_Pnt>());
         for(qsizetype i = 0; i < size_array; i++){
             ptr_points_-> operator[]("le").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
+
         }
 
         // 3
@@ -102,6 +104,78 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
 
         count++;
     }
+
+    //
+    ptr_points_->operator[]("up").push_back(std::list<gp_Pnt>());
+
+    auto it = ptr_points_-> operator[]("cx").front().begin();
+    auto endIt = ptr_points_-> operator[]("cx").front().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+    }
+
+    it = ptr_points_-> operator[]("le").front().begin();
+    endIt = ptr_points_-> operator[]("le").front().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+    }
+
+     it = ptr_points_-> operator[]("cv").front().begin();
+     endIt = ptr_points_-> operator[]("cv").front().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+    }
+
+    it = ptr_points_-> operator[]("re").front().begin();
+    endIt = ptr_points_-> operator[]("re").front().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+    }
+
+    //
+    ptr_points_->operator[]("dw").push_back(std::list<gp_Pnt>());
+
+    it = ptr_points_-> operator[]("cx").back().begin();
+    endIt = ptr_points_-> operator[]("cx").back().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+    }
+
+    it = ptr_points_-> operator[]("le").back().begin();
+    endIt = ptr_points_-> operator[]("le").back().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+    }
+
+    it = ptr_points_-> operator[]("cv").back().begin();
+    endIt = ptr_points_-> operator[]("cv").back().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+    }
+
+    it = ptr_points_-> operator[]("re").back().begin();
+    endIt = ptr_points_-> operator[]("re").back().end();
+    for(;it != endIt; it++){
+        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+    }
+
+    //
+    for(int i = 0; i < count; i++){
+        ptr_points_-> operator[]("cx").operator[](i).push_back(ptr_points_-> operator[]("le").operator[](i).front());
+    }
+
+    for(int i = 0; i < count; i++){
+        ptr_points_-> operator[]("cv").operator[](i).push_front(ptr_points_-> operator[]("le").operator[](i).back());
+    }
+
+    for(int i = 0; i < count; i++){
+        ptr_points_-> operator[]("cv").operator[](i).push_back(ptr_points_-> operator[]("re").operator[](i).front());
+    }
+
+    for(int i = 0; i < count; i++){
+        ptr_points_-> operator[]("cx").operator[](i).push_front(ptr_points_-> operator[]("re").operator[](i).back());
+    }
+
 
     return std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> (ptr_points_);
 
