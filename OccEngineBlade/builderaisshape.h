@@ -2,6 +2,10 @@
 #ifndef BUILDERAISSHAPE_H
 #define BUILDERAISSHAPE_H
 
+
+
+#include <QDebug>
+
 #include <memory>
 #include <deque>
 #include <list>
@@ -26,13 +30,24 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
 
 #include <TopoDS_Builder.hxx>
 
 #include <BRepBuilderAPI_MakeSolid.hxx>
 
+#include <BRepOffsetAPI_Sewing.hxx>
+
 
 #include <AIS_Shape.hxx>
+
+
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <GeomFill_BezierCurves.hxx>
 
 
 // данный класс должен получать множество точек из jsonReader и
@@ -44,21 +59,30 @@ class builderAisShape
 public:
     builderAisShape();
 
-    void set_points(std::shared_ptr<std::deque<std::list<gp_Pnt>>> ptr);
+    void set_points(std::map<std::string, std::deque<std::list<gp_Pnt>>>& ptr);
 
-    TopoDS_Solid get_TopoDS_solid() const;
+
+    TopoDS_Solid      get_TopoDS_solid() const;
     Handle(AIS_Shape) get_AIS_shape() const;
 
+
     bool empty();
-    TopoDS_Solid make_solid();
+    TopoDS_Solid      make_solid();
     Handle(AIS_Shape) make_ais_shape();
+
+
+    TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
+    TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
+
 private:
-    TopoDS_Face primitiv_surface(std::list<gp_Pnt>& pnts);
+    TopoDS_Shell make_shell(std::deque<std::list<gp_Pnt>>& points_);
+    //TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
+    //TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 public:
 
 private:
-    std::shared_ptr<std::deque<std::list<gp_Pnt>>> ptr_points_;
+    std::map<std::string, std::deque<std::list<gp_Pnt>>> points_;
 
     TopoDS_Solid TopoDS_blade_;
     Handle(AIS_Shape) AIS_blade_;

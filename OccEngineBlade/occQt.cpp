@@ -35,6 +35,65 @@ occQt::occQt(QWidget *parent)
 
     reader.open_file("../blade_data.json");
 
+    /*
+    std::list<gp_Pnt> temp1{{21.749797821044922, 14.367202758789062, 137.6999969482422},
+                           {17.14128875732422, 11.855399131774902, 137.6999969482422},
+                           {17.82572364807129, 9.761122703552246, 120.55714416503906},
+                           {22.580032348632812, 11.651630401611328, 120.55714416503906}};
+
+    std::list<gp_Pnt> temp2{{17.14128875732422, 11.855399131774902, 137.6999969482422},
+                            {12.563554763793945, 9.28793716430664, 137.6999969482422},
+                            {13.101649284362793, 7.796238899230957, 120.55714416503906},
+                            {17.82572364807129, 9.761122703552246, 120.55714416503906}};
+    */
+/*
+    std::deque<std::list<gp_Pnt>> cx = reader.parse_data()->operator[]("cx");
+
+
+    builder.set_points(*reader.parse_data());
+    builder.make_solid();
+    builder.make_ais_shape();
+    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
+
+    std::deque<std::list<gp_Pnt>> le = reader.parse_data()->operator[]("le");
+
+    builder.set_points(le);
+    builder.make_solid();
+    builder.make_ais_shape();
+    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
+
+    std::deque<std::list<gp_Pnt>> cv = reader.parse_data()->operator[]("cv");
+
+    builder.set_points(cv);
+    builder.make_solid();
+    builder.make_ais_shape();
+    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
+
+    std::deque<std::list<gp_Pnt>> re = reader.parse_data()->operator[]("re");
+
+    builder.set_points(re);
+    builder.make_solid();
+    builder.make_ais_shape();
+    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
+*/
+
+    //TopoDS_Face A1 = builder.primitiv_surface_Bezier(temp1);
+    //TopoDS_Face A2 = builder.primitiv_surface_Bezier(temp2);
+
+    //TopoDS_Shell shell;
+    //TopoDS_Builder b;
+
+    //b.MakeShell(shell);
+
+    //b.Add(shell, A1);
+    //b.Add(shell, A2);
+
+    //Handle(AIS_Shape) ptr = new AIS_Shape(shell);
+
+    //myOccView->getContext()->Display(ptr, true);
+
+    /*
+
     if(reader.is_open()){
         builder.set_points(reader.parse_data());
         builder.make_solid();
@@ -44,6 +103,14 @@ occQt::occQt(QWidget *parent)
     else{
         qDebug() << "ERRRRROOOOORRRR AAAAAAAA";
     }
+*/
+
+
+    builder.set_points(*reader.parse_data());
+    builder.make_solid();
+    builder.make_ais_shape();
+    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
+
 }
 
 occQt::~occQt()

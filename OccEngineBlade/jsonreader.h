@@ -26,7 +26,7 @@ public:
     bool is_open();
     bool open_file(QString filename);
 
-    std::shared_ptr<std::deque<std::list<gp_Pnt>>> parse_data();
+    std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> parse_data();
 private:
 
 
@@ -35,7 +35,7 @@ private:
     QFile file_;
     bool status_file_;
 
-    std::deque<std::list<gp_Pnt>>* deque_points_;
+    std::map<std::string, std::deque<std::list<gp_Pnt>>>* ptr_points_;
 
 
 };

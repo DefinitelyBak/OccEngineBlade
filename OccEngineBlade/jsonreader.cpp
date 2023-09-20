@@ -37,20 +37,21 @@ bool jsonReader::open_file(QString filename){
     return status_file_;
 }
 
-std::shared_ptr<std::deque<std::list<gp_Pnt>>> jsonReader::parse_data()
+std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader::parse_data()
 {
     // Файл не прочитан или ошибка чтения, возвращает пустой указатель.
-    if (!status_file_ || !json_document_.isObject()) return std::shared_ptr<std::deque<std::list<gp_Pnt>>>();
+    if (!status_file_ || !json_document_.isObject()) return std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>>();
 
     QJsonObject data;
 
     int count = 0;;
-    deque_points_ = new std::deque<std::list<gp_Pnt>>;
+    ptr_points_ = new std::map<std::string, std::deque<std::list<gp_Pnt>>>;
 
     data = json_document_.object();
 
+
     for (QJsonObject::iterator it = data.begin(); it < data.end(); it++){
-        deque_points_->push_back(std::list<gp_Pnt>());
+
 
         QJsonObject set_points = it->toObject();
         double z = set_points["z"].toDouble();
@@ -61,9 +62,9 @@ std::shared_ptr<std::deque<std::list<gp_Pnt>>> jsonReader::parse_data()
 
         qsizetype size_array = x.size();
 
-
+        ptr_points_->operator[]("cx").push_back(std::list<gp_Pnt>());
         for(qsizetype i = 0; i < size_array; i++){
-            deque_points_->operator [](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
+            ptr_points_-> operator[]("cx").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
         }
 
         // 2
@@ -72,8 +73,9 @@ std::shared_ptr<std::deque<std::list<gp_Pnt>>> jsonReader::parse_data()
 
         size_array = x.size();
 
+        ptr_points_->operator[]("le").push_back(std::list<gp_Pnt>());
         for(qsizetype i = 0; i < size_array; i++){
-            deque_points_->operator [](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
+            ptr_points_-> operator[]("le").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
         }
 
         // 3
@@ -82,8 +84,9 @@ std::shared_ptr<std::deque<std::list<gp_Pnt>>> jsonReader::parse_data()
 
         size_array = x.size();
 
+        ptr_points_->operator[]("cv").push_back(std::list<gp_Pnt>());
         for(qsizetype i = 0; i < size_array; i++){
-            deque_points_->operator [](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
+            ptr_points_-> operator[]("cv").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
         }
 
         // 4
@@ -92,13 +95,14 @@ std::shared_ptr<std::deque<std::list<gp_Pnt>>> jsonReader::parse_data()
 
         size_array = x.size();
 
+        ptr_points_->operator[]("re").push_back(std::list<gp_Pnt>());
         for(qsizetype i = 0; i < size_array; i++){
-            deque_points_->operator [](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
+            ptr_points_-> operator[]("re").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
         }
 
         count++;
     }
 
-    return std::shared_ptr<std::deque<std::list<gp_Pnt>>>(deque_points_);
+    return std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> (ptr_points_);
 
 }
