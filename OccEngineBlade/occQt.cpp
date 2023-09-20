@@ -159,6 +159,7 @@ occQt::occQt(QWidget *parent)
     builder.set_points(*reader.parse_data());
     builder.make_solid();
     builder.make_ais_shape();
+    builder.export_step();
     myOccView->getContext()->Display(builder.get_AIS_shape(), true);
 
 }

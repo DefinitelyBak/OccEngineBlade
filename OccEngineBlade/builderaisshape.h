@@ -49,6 +49,8 @@
 #include <Geom_BezierCurve.hxx>
 #include <GeomFill_BezierCurves.hxx>
 
+#include <STEPControl_Writer.hxx>
+
 
 // данный класс должен получать множество точек из jsonReader и
 // формировать AIS_Shape для viever
@@ -71,14 +73,15 @@ public:
     Handle(AIS_Shape) make_ais_shape();
 
 
-    TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
-    TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
+    bool export_step();
+    //TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
+    //TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 private:
     TopoDS_Shell make_shell_Bezier(std::deque<std::list<gp_Pnt>>& points_);
     TopoDS_Shell make_shell(std::list<gp_Pnt>& points_);
-    //TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
-    //TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
+    TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
+    TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 public:
     TopoDS_Shape make_shell_edge(std::deque<std::list<gp_Pnt>>& points_);

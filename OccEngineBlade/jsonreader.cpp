@@ -111,25 +111,25 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
     auto it = ptr_points_-> operator[]("cx").front().begin();
     auto endIt = ptr_points_-> operator[]("cx").front().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+        ptr_points_->operator[]("up").front().push_back(*it);
     }
 
     it = ptr_points_-> operator[]("le").front().begin();
     endIt = ptr_points_-> operator[]("le").front().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+        ptr_points_->operator[]("up").front().push_back(*it);
     }
 
      it = ptr_points_-> operator[]("cv").front().begin();
      endIt = ptr_points_-> operator[]("cv").front().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+        ptr_points_->operator[]("up").front().push_back(*it);
     }
 
     it = ptr_points_-> operator[]("re").front().begin();
     endIt = ptr_points_-> operator[]("re").front().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("up").operator[](0).push_back(*it);
+        ptr_points_->operator[]("up").front().push_back(*it);
     }
 
     //
@@ -138,25 +138,25 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
     it = ptr_points_-> operator[]("cx").back().begin();
     endIt = ptr_points_-> operator[]("cx").back().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+        ptr_points_->operator[]("dw").front().push_back(*it);
     }
 
     it = ptr_points_-> operator[]("le").back().begin();
     endIt = ptr_points_-> operator[]("le").back().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+        ptr_points_->operator[]("dw").front().push_back(*it);
     }
 
     it = ptr_points_-> operator[]("cv").back().begin();
     endIt = ptr_points_-> operator[]("cv").back().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+        ptr_points_->operator[]("dw").front().push_back(*it);
     }
 
     it = ptr_points_-> operator[]("re").back().begin();
     endIt = ptr_points_-> operator[]("re").back().end();
     for(;it != endIt; it++){
-        ptr_points_->operator[]("dw").operator[](0).push_back(*it);
+        ptr_points_->operator[]("dw").front().push_back(*it);
     }
 
     //

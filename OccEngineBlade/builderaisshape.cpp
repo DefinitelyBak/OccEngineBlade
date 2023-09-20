@@ -28,8 +28,8 @@ TopoDS_Solid builderAisShape::make_solid()
 {
     TopoDS_Builder builder;
     builder.MakeSolid(TopoDS_blade_);
-    builder.Add(TopoDS_blade_, make_shell(points_["up"][0]));
-    builder.Add(TopoDS_blade_, make_shell(points_["dw"][0]));
+    //builder.Add(TopoDS_blade_, make_shell(points_["up"].front()));
+    //builder.Add(TopoDS_blade_, make_shell(points_["dw"].front()));
     builder.Add(TopoDS_blade_, make_shell_Bezier(points_["cx"]));
     builder.Add(TopoDS_blade_, make_shell_Bezier(points_["cv"]));
     builder.Add(TopoDS_blade_, make_shell_edge(points_["le"]));
@@ -42,20 +42,20 @@ TopoDS_Face builderAisShape::primitiv_surface(std::list<gp_Pnt>& pnts){
 
 
     BRepBuilderAPI_MakeWire makerWire;
+    BRepBuilderAPI_MakePolygon poly;
 
-    for(auto it = pnts.begin(); it != pnts.end();){
-        gp_Pnt p1 = *it;
-        it++;
-        if(it == pnts.end()) break;
-        gp_Pnt p2 = *it;
-
-        makerWire.Add(BRepBuilderAPI_MakeEdge(p1, p2).Edge());
+    for(auto it = pnts.begin(); it != pnts.end(); it++){
+        poly.Add(*it);
+//        gp_Pnt p1 = *it;
+//        it++;
+//       if(it == pnts.end()) break;
+//       gp_Pnt p2 = *it;
+//
+//        makerWire.Add(BRepBuilderAPI_MakeEdge(p1, p2).Edge());
     }
 
-    makerWire.Add(BRepBuilderAPI_MakeEdge(pnts.front(), pnts.back()).Edge());
 
-
-    return BRepBuilderAPI_MakeFace(makerWire.Wire(), false).Face();
+    return BRepBuilderAPI_MakeFace(poly.Wire(), true).Face();
 }
 
 TopoDS_Face builderAisShape::primitiv_surface_Bezier(std::list<gp_Pnt>& pnts){
@@ -198,3 +198,10 @@ Handle(AIS_Shape) builderAisShape::make_ais_shape()
     return AIS_blade_;
 }
 
+bool builderAisShape::export_step(){
+    STEPControl_Writer writer;
+
+    writer.Transfer(TopoDS_blade_, STEPControl_ManifoldSolidBrep );
+
+    return writer.Write("Output.STEP");
+}
