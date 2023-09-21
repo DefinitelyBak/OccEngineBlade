@@ -34,134 +34,16 @@ occQt::occQt(QWidget *parent)
     createToolBars();
 
     reader.open_file("../blade_data.json");
-
-/*
-    std::deque<std::list<gp_Pnt>> cx = reader.parse_data()->operator[]("cx");
-
-
-    builder.set_points(*reader.parse_data());
-    builder.make_solid();
-    builder.make_ais_shape();
-    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
-
-    std::deque<std::list<gp_Pnt>> le = reader.parse_data()->operator[]("le");
-
-    builder.set_points(le);
-    builder.make_solid();
-    builder.make_ais_shape();
-    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
-
-    std::deque<std::list<gp_Pnt>> cv = reader.parse_data()->operator[]("cv");
-
-    builder.set_points(cv);
-    builder.make_solid();
-    builder.make_ais_shape();
-    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
-
-    std::deque<std::list<gp_Pnt>> re = reader.parse_data()->operator[]("re");
-
-    builder.set_points(re);
-    builder.make_solid();
-    builder.make_ais_shape();
-    myOccView->getContext()->Display(builder.get_AIS_shape(), false);
-*/
-
-    //TopoDS_Face A1 = builder.primitiv_surface_Bezier(temp1);
-    //TopoDS_Face A2 = builder.primitiv_surface_Bezier(temp2);
-
-    //TopoDS_Shell shell;
-    //TopoDS_Builder b;
-
-    //b.MakeShell(shell);
-
-    //b.Add(shell, A1);
-    //b.Add(shell, A2);
-
-    //Handle(AIS_Shape) ptr = new AIS_Shape(shell);
-
-    //myOccView->getContext()->Display(ptr, true);
-
-    /*
-
     if(reader.is_open()){
-        builder.set_points(reader.parse_data());
+        builder.set_points(*reader.parse_data());
         builder.make_solid();
         builder.make_ais_shape();
+        builder.export_step();
         myOccView->getContext()->Display(builder.get_AIS_shape(), true);
     }
     else{
-        qDebug() << "ERRRRROOOOORRRR AAAAAAAA";
+        qDebug() << "Eror";
     }
-*/
-
-    //std::deque<std::list<gp_Pnt>> ptr = reader.parse_data()->at("le");
-
-    //TopoDS_Shell A;
-    //TopoDS_Face A2 = builder.primitiv_surface_Bezier(temp2);
-
-    //TopoDS_Shell shell;
-    //TopoDS_Builder BUILD;
-    //UILD.MakeShell(A);
-
-    //auto it1 = ptr[0].begin();
-    //auto it2 = ptr[1].begin();
-
-
-
-/*
-    BRepOffsetAPI_Sewing sew(0.9);
-    //sew.Add(f1);sew.Perform();TopoDS_Shape sewedShape = sew.SewedShape();
-
-    while( (++it1) != ptr[0].end()){
-        it1--;
-
-        std::list<gp_Pnt> list;
-
-        list.push_back(*it1);
-        it1++;
-        list.push_back(*it1);
-        it2++;
-        list.push_back(*it2);
-        it2--;
-        list.push_back(*it2);
-
-        it2++;
-
-        sew.Add(builder.primitiv_surface_Bezier(list));
-    }
-
-    it1 = ptr[1].begin();
-    it2 = ptr[2].begin();
-    while( (++it1) != ptr[1].end()){
-        it1--;
-
-        std::list<gp_Pnt> list;
-
-        list.push_back(*it1);
-        it1++;
-        list.push_back(*it1);
-        it2++;
-        list.push_back(*it2);
-        it2--;
-        list.push_back(*it2);
-
-        it2++;
-
-        sew.Add(builder.primitiv_surface_Bezier(list));
-    }
-
-    sew.Perform();
-*/
-
-    //Handle(AIS_Shape) AIS = new AIS_Shape(builder.make_shell_edge(ptr));
-   // myOccView->getContext()->Display(AIS, false);
-
-    builder.set_points(*reader.parse_data());
-    builder.make_solid();
-    builder.make_ais_shape();
-    builder.export_step();
-    myOccView->getContext()->Display(builder.get_AIS_shape(), true);
-
 }
 
 occQt::~occQt()
@@ -208,9 +90,9 @@ void occQt::createToolBars( void )
 void occQt::about()
 {
     QMessageBox::about(this, tr("About occQt"),
-        tr("<h2>occQt 2.0</h2>"
-        "<p>Copyright &copy; 2014 eryar@163.com"
-        "<p>occQt is a demo applicaton about Qt and OpenCASCADE."));
+        tr("<h2>OccEngineBlade</h2>"
+        "<p>Copyright &copy; 2023 Halyl555@gmail.com"
+        "<p>This application is the construction and visualization of the engine blade."));
 }
 
 
