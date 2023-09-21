@@ -1,8 +1,8 @@
 #include "builderaisshape.h"
 
-builderAisShape::builderAisShape()
+builderAisShape::builderAisShape(std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr): status_(false)
 {
-    // пока не знаю , добавим!
+    ptr_points_ = ptr;
 }
 
 void builderAisShape::set_points(std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr)

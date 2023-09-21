@@ -54,21 +54,18 @@
 class builderAisShape
 {
 public:
-    builderAisShape();
+    builderAisShape(std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr = nullptr);
 
     void set_points(std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr);
 
-
     TopoDS_Solid      get_TopoDS_solid() const;
     Handle(AIS_Shape) get_AIS_shape() const;
-
 
     bool empty();
     bool is_done();
 
     TopoDS_Solid      make_solid();
     Handle(AIS_Shape) make_ais_shape();
-
 
     bool export_step();
 
