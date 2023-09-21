@@ -24,7 +24,6 @@
 class OccView;
 
 // Главный виджет, внутри него будет происходить магия.
-
 // Честно сказать класс спизжен, но отредактирован ^_^
 
 class occQt : public QMainWindow
@@ -36,22 +35,20 @@ public:
     ~occQt();
 
 protected:
-
     void createActions(void);
     void createMenus(void);
     void createToolBars(void);
 
+    bool openJson(QString path);
+    bool createBlade();
 
 private slots:
-
     void about(void);
 
 private:
     Ui::occQtClass ui;
 
-    // wrapped the widget for occ.
     OccView* myOccView;
-
 
     jsonReader reader;
     builderAisShape builder;

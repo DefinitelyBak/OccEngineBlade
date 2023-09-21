@@ -5,57 +5,59 @@ builderAisShape::builderAisShape()
     // пока не знаю , добавим!
 }
 
-void builderAisShape::set_points(std::map<std::string, std::deque<std::list<gp_Pnt>>>& points)
+void builderAisShape::set_points(std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr)
 {
-    points_ = points;
+    ptr_points_ = ptr;
 }
 
  TopoDS_Solid builderAisShape::get_TopoDS_solid() const
 {
     return TopoDS_blade_;
- }
+}
 
  Handle(AIS_Shape) builderAisShape::get_AIS_shape() const
- {
+{
     return AIS_blade_;
  }
 
-bool builderAisShape::empty(){
-    return points_.empty();
+bool builderAisShape::empty()
+{
+    return ptr_points_->empty();
+}
+
+bool builderAisShape::is_done()
+{
+    return status_;
 }
 
 TopoDS_Solid builderAisShape::make_solid()
 {
     TopoDS_Builder builder;
+
     builder.MakeSolid(TopoDS_blade_);
-    //builder.Add(TopoDS_blade_, make_shell(points_["up"].front()));
-    //builder.Add(TopoDS_blade_, make_shell(points_["dw"].front()));
-    builder.Add(TopoDS_blade_, make_shell_Bezier(points_["cx"]));
-    builder.Add(TopoDS_blade_, make_shell_Bezier(points_["cv"]));
-    builder.Add(TopoDS_blade_, make_shell_edge(points_["le"]));
-    builder.Add(TopoDS_blade_, make_shell_edge(points_["re"]));
+    builder.Add(TopoDS_blade_, make_shell(ptr_points_->at("up").front()));
+    builder.Add(TopoDS_blade_, make_shell(ptr_points_->at("dw").front()));
+    builder.Add(TopoDS_blade_, make_shell_Bezier(ptr_points_->at("cx")));
+    builder.Add(TopoDS_blade_, make_shell_Bezier(ptr_points_->at("cv")));
+    builder.Add(TopoDS_blade_, make_shell_edge(ptr_points_->at("le")));
+    builder.Add(TopoDS_blade_, make_shell_edge(ptr_points_->at("re")));
 
     return TopoDS_blade_;
 }
 
 TopoDS_Face builderAisShape::primitiv_surface(std::list<gp_Pnt>& pnts){
+    BRepBuilderAPI_MakePolygon poly_maker;
 
+    for(auto it = pnts.begin(); it != pnts.end(); it++) poly_maker.Add(*it);
 
-    BRepBuilderAPI_MakeWire makerWire;
-    BRepBuilderAPI_MakePolygon poly;
+    BRepBuilderAPI_MakeFace face_maker(poly_maker.Wire(), false);
 
-    for(auto it = pnts.begin(); it != pnts.end(); it++){
-        poly.Add(*it);
-//        gp_Pnt p1 = *it;
-//        it++;
-//       if(it == pnts.end()) break;
-//       gp_Pnt p2 = *it;
-//
-//        makerWire.Add(BRepBuilderAPI_MakeEdge(p1, p2).Edge());
+    if (face_maker.IsDone()){
+        status_ = true;
+        return face_maker.Face();
     }
 
-
-    return BRepBuilderAPI_MakeFace(poly.Wire(), true).Face();
+    return TopoDS_Face();
 }
 
 TopoDS_Face builderAisShape::primitiv_surface_Bezier(std::list<gp_Pnt>& pnts){
@@ -88,34 +90,39 @@ TopoDS_Face builderAisShape::primitiv_surface_Bezier(std::list<gp_Pnt>& pnts){
     GeomFill_BezierCurves bcFill;
 
     bcFill.Init(Ac1, Bc1, Cc1, Dc1, GeomFill_StretchStyle);
-    return BRepBuilderAPI_MakeFace(bcFill.Surface(), 1e-6);
+    BRepBuilderAPI_MakeFace face_maker(bcFill.Surface(), 1e-6);
+
+    if (face_maker.IsDone()){
+        status_ = true;
+        return face_maker.Face();
+    }
+
+    return TopoDS_Face();
 
 }
 TopoDS_Shell builderAisShape::make_shell(std::list<gp_Pnt>& points_){
+
     TopoDS_Shell Shell_blade;
     TopoDS_Builder builder;
+
     builder.MakeShell(Shell_blade);
     builder.Add(Shell_blade, primitiv_surface(points_));
+
+    if(!status_ || Shell_blade.IsNull()){
+        status_ = false;
+        return TopoDS_Shell();
+    }
+
     return Shell_blade;
 }
 
 TopoDS_Shell builderAisShape::make_shell_Bezier(std::deque<std::list<gp_Pnt>>& points_)
 {
 
-    TopoDS_Shell Shell_blade;
+    TopoDS_Shell shell_blade;
     TopoDS_Builder builder;
 
-
-    builder.MakeShell(Shell_blade);
-
-    // построение крышки лопатки
-    //builder.Add(Shell_blade, primitiv_surface(ptr_points_->front()));
-    // построение дна лопатки
-    //builder.Add(Shell_blade, primitiv_surface(ptr_points_->back()));
-
-    std::list<TopoDS_Face> list_Faces;
-
-    // таки пар deque.size() - 1 !!!
+    builder.MakeShell(shell_blade);
 
     for(int i = 0; i < points_.size() - 1; i++){
         std::list<gp_Pnt>& slice1 = points_.at(i);
@@ -144,7 +151,7 @@ TopoDS_Shell builderAisShape::make_shell_Bezier(std::deque<std::list<gp_Pnt>>& p
 
             --it1; // <- it1 == it2 (по позиции)
 
-            builder.Add(Shell_blade, primitiv_surface_Bezier(temp));
+            builder.Add(shell_blade, primitiv_surface_Bezier(temp));
             temp.clear();
         }
 
@@ -155,10 +162,15 @@ TopoDS_Shell builderAisShape::make_shell_Bezier(std::deque<std::list<gp_Pnt>>& p
         temp.push_back(slice2.front());
         temp.push_back(slice2.back());
 
-        builder.Add(Shell_blade, primitiv_surface_Bezier(temp));
+        builder.Add(shell_blade, primitiv_surface_Bezier(temp));
     }
 
-    return Shell_blade;
+    if(!status_ || shell_blade.IsNull()){
+        status_ = false;
+        return TopoDS_Shell();
+    }
+
+    return shell_blade;
 }
 
 TopoDS_Shape builderAisShape::make_shell_edge(std::deque<std::list<gp_Pnt>>& points_){
@@ -189,7 +201,14 @@ TopoDS_Shape builderAisShape::make_shell_edge(std::deque<std::list<gp_Pnt>>& poi
     }
     sew.Perform();
 
-    return sew.SewedShape();
+    TopoDS_Shape result = sew.SewedShape();
+
+    if(!status_ || result.IsNull()){
+        status_ = false;
+        return TopoDS_Shape();
+    }
+
+    return result;
 }
 
 Handle(AIS_Shape) builderAisShape::make_ais_shape()

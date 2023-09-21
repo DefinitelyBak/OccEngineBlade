@@ -14,8 +14,12 @@
 
 #include <gp_Pnt.hxx>
 
-// Лласс считывает точки из json файла, возвращает множество точек gp_Pnt.
-// взят стиль из stl
+// Класс считывает точки из json файла, возвращает множество точек gp_Pnt,
+// представленные в виде map <string, deque < list<gp_Pnt>>>
+// string - имя поверхности лопатки.
+// каждый list - срез лопатки.
+//
+// взят стиль из stl.
 
 class jsonReader
 {
@@ -28,16 +32,12 @@ public:
 
     std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> parse_data();
 private:
-
-
     QJsonDocument json_document_;
 
     QFile file_;
     bool status_file_;
 
-    std::map<std::string, std::deque<std::list<gp_Pnt>>>* ptr_points_;
-
-
+    std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr_points_;
 };
 
 #endif // JSONREADER_H

@@ -2,8 +2,6 @@
 #ifndef BUILDERAISSHAPE_H
 #define BUILDERAISSHAPE_H
 
-
-
 #include <QDebug>
 
 #include <memory>
@@ -38,9 +36,7 @@
 
 #include <BRepOffsetAPI_Sewing.hxx>
 
-
 #include <AIS_Shape.hxx>
-
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
@@ -55,13 +51,12 @@
 // данный класс должен получать множество точек из jsonReader и
 // формировать AIS_Shape для viever
 
-// класс принимает
 class builderAisShape
 {
 public:
     builderAisShape();
 
-    void set_points(std::map<std::string, std::deque<std::list<gp_Pnt>>>& ptr);
+    void set_points(std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr);
 
 
     TopoDS_Solid      get_TopoDS_solid() const;
@@ -69,24 +64,29 @@ public:
 
 
     bool empty();
+    bool is_done();
+
     TopoDS_Solid      make_solid();
     Handle(AIS_Shape) make_ais_shape();
 
 
     bool export_step();
-    //TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
-    //TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 private:
+    TopoDS_Shape make_shell_edge(std::deque<std::list<gp_Pnt>>& points_);
     TopoDS_Shell make_shell_Bezier(std::deque<std::list<gp_Pnt>>& points_);
     TopoDS_Shell make_shell(std::list<gp_Pnt>& points_);
+
     TopoDS_Face  primitiv_surface(std::list<gp_Pnt>& pnts);
     TopoDS_Face  primitiv_surface_Bezier(std::list<gp_Pnt>& pnts);
 
 public:
-    TopoDS_Shape make_shell_edge(std::deque<std::list<gp_Pnt>>& points_);
+
+
 private:
-    std::map<std::string, std::deque<std::list<gp_Pnt>>> points_;
+    bool status_;
+
+    std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> ptr_points_;
 
     TopoDS_Solid TopoDS_blade_;
     Handle(AIS_Shape) AIS_blade_;

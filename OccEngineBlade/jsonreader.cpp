@@ -37,15 +37,22 @@ bool jsonReader::open_file(QString filename){
     return status_file_;
 }
 
+// Данный метод разбить на функции проблемотично, так как одни и теже точки входят в разные поферхности.
+// лопатка имеет 4 поверхности:
+// cx - convex - спинка (более арочная)
+// cv - concave - корыто (менее арочная)
+// le - left edge - левая кромка (окружность)
+// re - right edge - правая кромка (окружность)
+
 std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader::parse_data()
 {
     // Файл не прочитан или ошибка чтения, возвращает пустой указатель.
-    if (!status_file_ || !json_document_.isObject()) return std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>>();
+    if (!status_file_ || json_document_.isEmpty()) return std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>>();
 
     QJsonObject data;
 
     int count = 0;
-    ptr_points_ = new std::map<std::string, std::deque<std::list<gp_Pnt>>>;
+    ptr_points_ = std::make_shared<std::map<std::string, std::deque<std::list<gp_Pnt>>>>();
 
     data = json_document_.object();
 
@@ -56,7 +63,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
         QJsonObject set_points = it->toObject();
         double z = set_points["z"].toDouble();
 
-        // 1
+        // Чтение cx
         QJsonArray x = set_points["x_cx"].toArray();
         QJsonArray y = set_points["y_cx"].toArray();
 
@@ -68,7 +75,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
             ptr_points_-> operator[]("cx").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
         }
 
-        // 2
+        // Чтение le
         x = set_points["x_le"].toArray();
         y = set_points["y_le"].toArray();
 
@@ -80,7 +87,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
 
         }
 
-        // 3
+        // Чтение cv
         x = set_points["x_cv"].toArray();
         y = set_points["y_cv"].toArray();
 
@@ -91,7 +98,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
             ptr_points_-> operator[]("cv").operator[](count).push_back(gp_Pnt(x[i].toDouble(), y[i].toDouble(), z));
         }
 
-        // 4
+        // Чтение re
         x = set_points["x_re"].toArray();
         y = set_points["y_re"].toArray();
 
@@ -105,7 +112,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
         count++;
     }
 
-    //
+    // построение множества точек крышки лопатки
     ptr_points_->operator[]("up").push_back(std::list<gp_Pnt>());
 
     auto it = ptr_points_-> operator[]("cx").front().begin();
@@ -132,7 +139,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
         ptr_points_->operator[]("up").front().push_back(*it);
     }
 
-    //
+    // построение множества точек дна лопатки
     ptr_points_->operator[]("dw").push_back(std::list<gp_Pnt>());
 
     it = ptr_points_-> operator[]("cx").back().begin();
@@ -159,7 +166,7 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
         ptr_points_->operator[]("dw").front().push_back(*it);
     }
 
-    //
+    // добавление крайних точек le и re в cv и cx
     for(int i = 0; i < count; i++){
         ptr_points_-> operator[]("cx").operator[](i).push_back(ptr_points_-> operator[]("le").operator[](i).front());
     }
@@ -177,6 +184,6 @@ std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> jsonReader
     }
 
 
-    return std::shared_ptr<std::map<std::string, std::deque<std::list<gp_Pnt>>>> (ptr_points_);
+    return ptr_points_;
 
 }

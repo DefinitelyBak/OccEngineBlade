@@ -33,17 +33,10 @@ occQt::occQt(QWidget *parent)
     createMenus();
     createToolBars();
 
-    reader.open_file("../blade_data.json");
-    if(reader.is_open()){
-        builder.set_points(*reader.parse_data());
-        builder.make_solid();
-        builder.make_ais_shape();
-        builder.export_step();
-        myOccView->getContext()->Display(builder.get_AIS_shape(), true);
-    }
-    else{
-        qDebug() << "Eror";
-    }
+    if(openJson("../resources/blade_data.json") && createBlade())
+        qDebug() << "Done";
+    else
+        qDebug() << "Error (";
 }
 
 occQt::~occQt()
@@ -85,6 +78,21 @@ void occQt::createToolBars( void )
 
     aToolBar = addToolBar(tr("Help"));
     aToolBar->addAction(ui.actionAbout);
+}
+
+bool occQt::openJson(QString path)
+{
+    return reader.open_file(path);
+}
+
+bool occQt::createBlade()
+{
+    builder.set_points(reader.parse_data());
+    builder.make_solid();
+    builder.make_ais_shape();
+    builder.export_step();
+    myOccView->getContext()->Display(builder.get_AIS_shape(), true);
+    return builder.is_done();
 }
 
 void occQt::about()
