@@ -1,14 +1,3 @@
-/*
-*    Copyright (c) 2018 Shing Liu All Rights Reserved.
-*
-*           File : occQt.cpp
-*         Author : Shing Liu(eryar@163.com)
-*           Date : 2018-01-08 21:00
-*        Version : OpenCASCADE7.2.0 & Qt5.7.1
-*
-*    Description : Qt main window for OpenCASCADE.
-*/
-
 #include "occQt.h"
 #include "occView.h"
 
