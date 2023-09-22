@@ -1,13 +1,3 @@
-/*
-*    Copyright (c) 2018 Shing Liu All Rights Reserved.
-*
-*           File : OccView.cpp
-*         Author : Shing Liu(eryar@163.com)
-*           Date : 2018-01-08 21:00
-*        Version : OpenCASCADE7.2.0 & Qt5.7.1
-*
-*    Description : Qt widget for OpenCASCADE viewer.
-*/
 
 #include <OpenGl_GraphicDriver.hxx>
 
