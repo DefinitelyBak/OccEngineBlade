@@ -1,13 +1,3 @@
-/*
-*    Copyright (c) 2018 Shing Liu All Rights Reserved.
-*
-*           File : occQt.h
-*         Author : Shing Liu(eryar@163.com)
-*           Date : 2018-01-08 20:00
-*        Version : OpenCASCADE7.2.0 & Qt5.7.1
-*
-*    Description : OpenCASCADE in Qt.
-*/
 
 #ifndef OCCQT_H
 #define OCCQT_H
